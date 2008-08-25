@@ -13,7 +13,7 @@ our $VERSION = '1.0';
 
 =head1 NAME
 
-Geometry::AffineTransform - Represents a 2D affine transform to map 2D coordinates to other 2D coordinates.
+Geometry::AffineTransform - Maps 2D coordinates to other 2D coordinates
 
 =head1 SYNOPSIS
 
@@ -28,8 +28,23 @@ Geometry::AffineTransform - Represents a 2D affine transform to map 2D coordinat
 	
 =head1 DESCRIPTION
 
-Geometry::AffineTransform Represents a 2D affine transform to map 2D coordinates
-to other 2D coordinates.
+Geometry::AffineTransform instances represent 2D affine transformations
+that map 2D coordinates to other 2D coordinates. The references in
+L</SEE ALSO> provide more information about affine transformations.
+
+You create a new instance with L</new>, configure it to perform the desired transformation
+with a combination of L</scale>, L</rotate> and L</translate> and then perform the actual
+transformation on one or more x/y coordinate pairs with L</transform>.
+
+The state of a newly created instance represents the identity transform,
+that is, it transforms all input coordinates to the same output coordinates.
+
+Most methods return the instance so that you can chain several calls:
+
+    my $t = Geometry::AffineTransform->new();
+    $t->scale(...)->translate(...)->rotate(...);
+    
+    ($x, $y) = Geometry::AffineTransform->new()->rotate(..)->transform($x, $y);
 
 =cut
 
@@ -38,7 +53,27 @@ to other 2D coordinates.
 
 =head2 new
 
-Constructor, creates a new instance with its state representing an identity transform.
+Constructor, returns a new instance configured with an identity transform.
+
+=head3 Parameters
+
+You can optionally supply any of the six specifiable parts of the transformation matrix
+if you want an initial state different from the identity transform:
+
+    [ m11 m21 0 ]
+    [ m21 m22 0 ]
+    [ tx  ty  1 ]
+
+The six values in the first two colums are the specifiable values. You can initialize
+them with key/value parameters:
+
+    my $t = Geometry::AffineTransform->new(tx => 10, ty => 15);
+
+By default, the identity transform represented by this matrix is used:
+
+    [ 1 0 0 ]
+    [ 0 1 0 ]
+    [ 0 0 1 ]
 
 =cut
 
@@ -54,6 +89,22 @@ sub new {
 }
 
 
+
+
+=head2 transform
+
+Transform one or more coordinate pairs according to the current state.
+
+=head3 Parameters
+
+This method expects an even number of positional parameters, each pair
+representing the x and y coordinates of a point.
+
+=head3 Result
+
+Returns the transformed list of coordinates in the same form as the input list.
+
+=cut
 
 sub transform {
 	my $self = shift;
@@ -71,6 +122,9 @@ sub transform {
 
 
 
+
+# concatenate another transformation matrix to the current state.
+# Takes the six specifiable parts of the 3x3 transformation matrix.
 sub concatenate_matrix_2x3 {
 	my $self = shift;
 	my ($m11, $m12, $m21, $m22, $tx, $ty) = @_;
@@ -80,6 +134,21 @@ sub concatenate_matrix_2x3 {
 }
 
 
+=head2 concatenate
+
+Combine the receiver's state with that of another transformation instance.
+
+=head3 Parameters
+
+This method expects a list of one or more C<Geometry::AffineTransform>
+instances and combines the transformation of each one with the receiver's
+in the given order.
+
+=head3 Result
+
+Returns C<$self>.
+
+=cut
 
 sub concatenate {
 	my $self = shift;
@@ -89,6 +158,31 @@ sub concatenate {
 }
 
 
+=head2 scale
+
+Adds a scaling transformation.
+
+=head3 Parameters
+
+This method expects positional parameters.
+
+=over
+
+=item sx
+
+The scaling factor for the x dimension.
+
+=item sy
+
+The scaling factor for the y dimension.
+
+=back
+
+=head3 Result
+
+Returns C<$self>.
+
+=cut
 
 sub scale {
 	my $self = shift;
@@ -97,6 +191,32 @@ sub scale {
 }
 
 
+=head2 scale
+
+Adds a translation transformation, i.e. the transformation shifts
+the input coordinates by a constant amount.
+
+=head3 Parameters
+
+This method expects positional parameters.
+
+=over
+
+=item tx
+
+The offset for the x dimension.
+
+=item ty
+
+The offset for the y dimension.
+
+=back
+
+=head3 Result
+
+Returns C<$self>.
+
+=cut
 
 sub translate {
 	my $self = shift;
@@ -104,6 +224,31 @@ sub translate {
 	return $self->concatenate_matrix_2x3(1, 0, 0, 1, $tx, $ty);
 }
 
+
+
+
+=head2 rotate
+
+Adds a rotation transformation.
+
+=head3 Parameters
+
+This method expects positional parameters.
+
+=over
+
+=item angle
+
+The rotation angle in degrees. With no other transformation active,
+positive values rotate counterclockwise.
+
+=back
+
+=head3 Result
+
+Returns C<$self>.
+
+=cut
 
 sub rotate {
 	my $self = shift;
@@ -114,13 +259,13 @@ sub rotate {
 
 
 
-
+# returns the 6 specifiable parts of the transformation matrix
 sub matrix_2x3 {
 	my $self = shift;
 	return $self->{m11}, $self->{m12}, $self->{m21}, $self->{m22}, $self->{tx}, $self->{ty};
 }
 
-
+# sets the 6 specifiable parts of the transformation matrix
 sub set_matrix_2x3 {
 	my $self = shift;
 	($self->{m11}, $self->{m12},
@@ -129,6 +274,17 @@ sub set_matrix_2x3 {
 	return $self;
 }
 
+
+=head2 matrix
+
+Returns the current value of the 3 x 3 transformation matrix, including the
+third, fixed column, as a 9-element list:
+
+    my ($m11, $m12, undef,
+        $m21, $m22, undef,
+        $tx,  $ty,  undef) = $t->matrix();
+
+=cut
 
 sub matrix {
 	my $self = shift;
