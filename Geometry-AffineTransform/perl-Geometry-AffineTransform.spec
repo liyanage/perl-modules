@@ -3,7 +3,6 @@ Version: 1.0
 Release: 1
 Name: perl-%{modname}
 Requires: perl >= 0:5.00503
-# the following header tags usually don't require modifications
 Summary: %{modname} Perl module
 License: distributable
 Group: Development/Libraries
@@ -15,7 +14,7 @@ Source0: %{modname}-%{version}.tar.gz
 
 %description
 
-Geometry::AffineTransform - <#description#>
+Geometry::AffineTransform - Perl module to map 2D coordinates to other 2D coordinates
 
 %prep
 %setup -q -n %{modname}-%{version} 

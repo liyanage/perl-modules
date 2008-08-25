@@ -1,0 +1,5 @@
+Geometry::AffineTransform instances represent 2D affine transformations
+that map 2D coordinates to other 2D coordinates. See the POD documentation
+for details. The references in the SEE ALSO section provide background information
+about affine transformations.
+
