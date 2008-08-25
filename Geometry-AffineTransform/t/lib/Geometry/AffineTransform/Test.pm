@@ -7,7 +7,7 @@ use strict;
 use warnings;
 
 use Test::More;
-
+use List::Util qw(max min);
 
 sub identity : Test(2) {
 	my $self = shift;
@@ -72,6 +72,53 @@ sub concatenate : Test(1) {
 }
 
 
+
+sub translate : Test(2) {
+	my $self = shift @_;
+	my $t = Geometry::AffineTransform->new();
+	$t->translate(5, 6);
+	is_deeply([$t->transform(10, 5)], [15, 11]);
+	$t->rotate(90);
+	is_deeply([$t->transform(10, 5)], [-11, 15]);
+}
+
+
+
+sub scale : Test(1) {
+	my $self = shift @_;
+	my $t = Geometry::AffineTransform->new();
+	$t->scale(3, 2);
+	is_deeply([$t->transform(10, 5)], [30, 10]);
+}
+
+
+
+sub transform_multiple : Test(1) {
+	my $self = shift @_;
+	my $t = Geometry::AffineTransform->new();
+	$t->scale(3, 2);
+	is_deeply([$t->transform(10, 5, 11, 6)], [30, 10, 33, 12]);
+}
+
+
+
+
+sub rect_dimensions {
+#	my $self = shift;
+	my ($x, $y, $x2, $y2) = @_;
+
+	warn(Data::Dumper->Dump([[$x, $y, $x2, $y2]]));
+	
+	my $w = max($x, $x2) - min($x, $x2);
+	my $h = max($y, $y2) - min($y, $y2);
+	
+	return ($w, $h);
+}
+
+
+
+
+#todo: Test::Pod integration
 
 
 
