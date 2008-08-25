@@ -1,4 +1,7 @@
+lib/Geometry/AffineTransform.pm
 Makefile.PL
 MANIFEST
-lib/Geometry/AffineTransform.pm
+perl-Geometry-AffineTransform.spec
+run-test.sh
 t/1.t
+t/lib/Geometry/AffineTransform/Test.pm
