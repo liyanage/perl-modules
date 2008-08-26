@@ -1,14 +1,13 @@
 package Geometry::AffineTransform;
 
+our $VERSION = '1.1';
+
 use strict;
 use warnings;
 
 use Carp;
 use Hash::Util;
-use Data::Dumper;
-use Math::Trig;
-
-our $VERSION = '1.0';
+use Math::Trig ();
 
 
 =head1 NAME
@@ -17,15 +16,15 @@ Geometry::AffineTransform - Maps 2D coordinates to other 2D coordinates
 
 =head1 SYNOPSIS
 
-	use Geometry::AffineTransform;
-	
-	my $t = Geometry::AffineTransform->new();
-	$t->translate($delta_x, $delta_y);
-	$t->rotate($degrees);
-	my $t2 = Geometry::AffineTransform->new()->scale(3.1, 2.3);
-	$t->concatenate($t2);
-	my ($x1, $y1, $x2, $y2, ...) = $t->transform($x1, $y1, $x2, $y2, ...);
-	
+    use Geometry::AffineTransform;
+    
+    my $t = Geometry::AffineTransform->new();
+    $t->translate($delta_x, $delta_y);
+    $t->rotate($degrees);
+    my $t2 = Geometry::AffineTransform->new()->scale(3.1, 2.3);
+    $t->concatenate($t2);
+    my ($x1, $y1, $x2, $y2, ...) = $t->transform($x1, $y1, $x2, $y2, ...);
+    
 =head1 DESCRIPTION
 
 Geometry::AffineTransform instances represent 2D affine transformations
@@ -39,7 +38,7 @@ transformation on one or more x/y coordinate pairs with L</transform>.
 The state of a newly created instance represents the identity transform,
 that is, it transforms all input coordinates to the same output coordinates.
 
-Most methods return the instance so that you can chain several calls:
+Most methods return the instance so that you can chain method calls:
 
     my $t = Geometry::AffineTransform->new();
     $t->scale(...)->translate(...)->rotate(...);
@@ -57,15 +56,14 @@ Constructor, returns a new instance configured with an identity transform.
 
 =head3 Parameters
 
-You can optionally supply any of the six specifiable parts of the transformation matrix
-if you want an initial state different from the identity transform:
+You can optionally supply any of the six specifiable parts of the transformation matrix.
+The six values in the first two colums are the specifiable values:
 
     [ m11 m21 0 ]
     [ m21 m22 0 ]
     [ tx  ty  1 ]
 
-The six values in the first two colums are the specifiable values. You can initialize
-them with key/value parameters:
+The constructor lets you initialize them with key/value parameters:
 
     my $t = Geometry::AffineTransform->new(tx => 10, ty => 15);
 
@@ -75,6 +73,17 @@ By default, the identity transform represented by this matrix is used:
     [ 0 1 0 ]
     [ 0 0 1 ]
 
+In other words, invoking the constructor without arguments is equivalent to this:
+
+    my $t = Geometry::AffineTransform->new(
+        m11 => 1,
+        m12 => 0,
+        m21 => 0,
+        m22 => 1,
+        tx  => 10,
+        ty  => 15
+    );
+
 =cut
 
 sub new {
@@ -83,10 +92,17 @@ sub new {
 	
 	my $class = ref($self) || $self;
 	$self = bless {m11 => 1, m12 => 0, m21 => 0, m22 => 1, tx => 0, ty => 0, %args}, $class;
+#	$self->init();
 	Hash::Util::lock_keys(%$self);
 	
 	return $self;
 }
+
+
+# hook for subclasses
+# sub init {
+# }
+
 
 
 
@@ -152,9 +168,12 @@ Returns C<$self>.
 
 sub concatenate {
 	my $self = shift;
-	my ($t) = @_;
-	croak "Expecting argument of type Geometry::AffineTransform" unless (ref $t);
-	return $self->concatenate_matrix_2x3($t->matrix_2x3());
+	my @transforms = @_;
+	foreach my $t (@transforms) {
+		croak "Expecting argument of type Geometry::AffineTransform" unless (ref $t);
+		$self->concatenate_matrix_2x3($t->matrix_2x3()) ;
+	}
+	return $self;
 }
 
 
@@ -253,7 +272,7 @@ Returns C<$self>.
 sub rotate {
 	my $self = shift;
 	my ($degrees) = @_;
-	my $rad = deg2rad($degrees);
+	my $rad = Math::Trig::deg2rad($degrees);
 	return $self->concatenate_matrix_2x3(cos($rad), sin($rad), -sin($rad), cos($rad), 0, 0);
 }
 
@@ -319,14 +338,6 @@ sub matrix_multiply {
 }
 
 
-
-
-
-
-
-
-1;
-
 =head1 SEE ALSO
 
 =over
@@ -347,10 +358,17 @@ http://en.wikipedia.org/wiki/Matrix_(mathematics)#Matrix_multiplication
 
 
 
+=head1 AUTHOR
 
+Marc Liyanage <liyanage@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
 Copyright 2008 Marc Liyanage.
 
+Distributed under the Artistic License 2.
+
 =cut
+
+
+1;
