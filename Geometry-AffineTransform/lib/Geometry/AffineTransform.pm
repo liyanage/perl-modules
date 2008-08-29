@@ -17,14 +17,14 @@ Geometry::AffineTransform - Maps 2D coordinates to other 2D coordinates
 =head1 SYNOPSIS
 
     use Geometry::AffineTransform;
-    
+
     my $t = Geometry::AffineTransform->new();
     $t->translate($delta_x, $delta_y);
     $t->rotate($degrees);
     my $t2 = Geometry::AffineTransform->new()->scale(3.1, 2.3);
     $t->concatenate($t2);
     my ($x1, $y1, $x2, $y2, ...) = $t->transform($x1, $y1, $x2, $y2, ...);
-    
+
 =head1 DESCRIPTION
 
 Geometry::AffineTransform instances represent 2D affine transformations
@@ -42,7 +42,7 @@ Most methods return the instance so that you can chain method calls:
 
     my $t = Geometry::AffineTransform->new();
     $t->scale(...)->translate(...)->rotate(...);
-    
+
     ($x, $y) = Geometry::AffineTransform->new()->rotate(..)->transform($x, $y);
 
 =cut
@@ -53,8 +53,6 @@ Most methods return the instance so that you can chain method calls:
 =head2 new
 
 Constructor, returns a new instance configured with an identity transform.
-
-=head3 Parameters
 
 You can optionally supply any of the six specifiable parts of the transformation matrix.
 The six values in the first two colums are the specifiable values:
@@ -89,12 +87,12 @@ In other words, invoking the constructor without arguments is equivalent to this
 sub new {
 	my $self = shift @_;
 	my (%args) = @_;
-	
+
 	my $class = ref($self) || $self;
 	$self = bless {m11 => 1, m12 => 0, m21 => 0, m22 => 1, tx => 0, ty => 0, %args}, $class;
 #	$self->init();
 	Hash::Util::lock_keys(%$self);
-	
+
 	return $self;
 }
 
@@ -111,12 +109,8 @@ sub new {
 
 Transform one or more coordinate pairs according to the current state.
 
-=head3 Parameters
-
 This method expects an even number of positional parameters, each pair
 representing the x and y coordinates of a point.
-
-=head3 Result
 
 Returns the transformed list of coordinates in the same form as the input list.
 
@@ -125,14 +119,14 @@ Returns the transformed list of coordinates in the same form as the input list.
 sub transform {
 	my $self = shift;
 	my (@pairs) = @_;
-	
+
 	my @result;
 	while (my ($x, $y) = splice(@pairs, 0, 2)) {
 		my $x2 = $self->{m11} * $x + $self->{m21} * $y + $self->{tx};
 		my $y2 = $self->{m12} * $x + $self->{m22} * $y + $self->{ty};
 		push @result, $x2, $y2;
 	}
-	
+
 	return @result;
 }
 
@@ -154,13 +148,9 @@ sub concatenate_matrix_2x3 {
 
 Combine the receiver's state with that of another transformation instance.
 
-=head3 Parameters
-
 This method expects a list of one or more C<Geometry::AffineTransform>
 instances and combines the transformation of each one with the receiver's
 in the given order.
-
-=head3 Result
 
 Returns C<$self>.
 
@@ -181,8 +171,6 @@ sub concatenate {
 
 Adds a scaling transformation.
 
-=head3 Parameters
-
 This method expects positional parameters.
 
 =over
@@ -197,8 +185,6 @@ The scaling factor for the y dimension.
 
 =back
 
-=head3 Result
-
 Returns C<$self>.
 
 =cut
@@ -210,12 +196,10 @@ sub scale {
 }
 
 
-=head2 scale
+=head2 translate
 
 Adds a translation transformation, i.e. the transformation shifts
 the input coordinates by a constant amount.
-
-=head3 Parameters
 
 This method expects positional parameters.
 
@@ -230,8 +214,6 @@ The offset for the x dimension.
 The offset for the y dimension.
 
 =back
-
-=head3 Result
 
 Returns C<$self>.
 
@@ -250,8 +232,6 @@ sub translate {
 
 Adds a rotation transformation.
 
-=head3 Parameters
-
 This method expects positional parameters.
 
 =over
@@ -262,8 +242,6 @@ The rotation angle in degrees. With no other transformation active,
 positive values rotate counterclockwise.
 
 =back
-
-=head3 Result
 
 Returns C<$self>.
 
@@ -317,18 +295,18 @@ sub matrix {
 sub matrix_multiply {
 	my $self = shift;
 	my ($a, $b) = @_;
-	
+
 # 	a11 a12 0
 # 	a21 a22 0
 # 	a31 a32 1
-# 	
+#
 # 	b11 b12 0
 # 	b21 b22 0
 # 	b31 b32 1
 
 	my ($a11, $a12, $a21, $a22, $a31, $a32) = @$a;
 	my ($b11, $b12, $b21, $b22, $b31, $b32) = @$b;
-	
+
 	return
 		($a11 * $b11 + $a12 * $b21),        ($a11 * $b12 + $a12 * $b22),
 		($a21 * $b11 + $a22 * $b21),        ($a21 * $b12 + $a22 * $b22),
@@ -344,15 +322,15 @@ sub matrix_multiply {
 
 =item Apple Quartz 2D Programming Guide - The Math Behind the Matrices
 
-http://developer.apple.com/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/dq_affine/chapter_6_section_7.html
+L<http://developer.apple.com/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/dq_affine/chapter_6_section_7.html>
 
 =item Sun Java java.awt.geom.AffineTransform
 
-http://java.sun.com/j2se/1.4.2/docs/api/java/awt/geom/AffineTransform.html
+L<http://java.sun.com/j2se/1.4.2/docs/api/java/awt/geom/AffineTransform.html>
 
 =item Wikipedia - Matrix Multiplication
 
-http://en.wikipedia.org/wiki/Matrix_(mathematics)#Matrix_multiplication
+L<http://en.wikipedia.org/wiki/Matrix_(mathematics)#Matrix_multiplication>
 
 =back
 
