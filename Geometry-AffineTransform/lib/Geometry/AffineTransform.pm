@@ -9,6 +9,7 @@ use Carp;
 use Hash::Util;
 use Math::Trig ();
 
+# $Id$
 
 =head1 NAME
 
@@ -102,6 +103,18 @@ sub new {
 # }
 
 
+
+
+=head2 clone
+
+Returns a clone of the instance.
+
+=cut
+
+sub clone {
+	my $self = shift @_;
+	return $self->new()->set_matrix_2x3($self->matrix_2x3());
+}
 
 
 

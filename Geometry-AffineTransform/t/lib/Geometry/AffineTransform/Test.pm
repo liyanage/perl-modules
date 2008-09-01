@@ -8,6 +8,7 @@ use warnings;
 
 use Test::More;
 use List::Util qw(max min);
+use Data::Dumper;
 
 sub identity : Test(2) {
 	my $self = shift;
@@ -56,7 +57,7 @@ sub concatenate_matrix_2x3 : Test(2) {
 	my $t = Geometry::AffineTransform->new();
 	$t->set_matrix_2x3(1, 2, 3, 4, 5, 6);
 	is($t->concatenate_matrix_2x3(1, 2, 3, 4, 5, 6), $t, "concatenate_matrix_2x3()");
-	is_deeply([$t->matrix_2x3], [7, 10, 15, 22, 28, 40]);
+	is_deeply([$t->matrix_2x3()], [7, 10, 15, 22, 28, 40]);
 }
 
 
@@ -68,7 +69,7 @@ sub concatenate : Test(1) {
 	my $t2 = Geometry::AffineTransform->new();
 	$t2->set_matrix_2x3(1, 2, 3, 4, 5, 6);
 	$t->concatenate($t2);
-	is_deeply([$t->matrix_2x3], [7, 10, 15, 22, 28, 40]);
+	is_deeply([$t->matrix_2x3()], [7, 10, 15, 22, 28, 40]);
 }
 
 
@@ -116,9 +117,17 @@ sub rect_dimensions {
 }
 
 
+sub clone : Test(3) {
+	my $self = shift @_;
+	my $t = Geometry::AffineTransform->new()->set_matrix_2x3(1, 2, 3, 4, 5, 6);
+	my $t2 = $t->clone();
+	is_deeply([$t2->matrix_2x3()], [1, 2, 3, 4, 5, 6]);
+	$t->set_matrix_2x3(reverse 1, 2, 3, 4, 5, 6);
+	is_deeply([$t->matrix_2x3()], [reverse 1, 2, 3, 4, 5, 6]);
+	is_deeply([$t2->matrix_2x3()], [1, 2, 3, 4, 5, 6]);
+	
+}
 
-
-#todo: Test::Pod integration
 
 
 
