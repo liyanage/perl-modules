@@ -13,7 +13,7 @@ use Math::Trig ();
 
 =head1 NAME
 
-Geometry::AffineTransform - Maps 2D coordinates to other 2D coordinates
+Geometry::AffineTransform - Affine Transformation to map 2D coordinates to other 2D coordinates
 
 =head1 SYNOPSIS
 

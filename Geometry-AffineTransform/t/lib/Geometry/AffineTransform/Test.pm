@@ -129,8 +129,6 @@ sub clone : Test(3) {
 }
 
 
-
-
 sub matrix_multiply : Test(1) {
 	my $self = shift;
 
