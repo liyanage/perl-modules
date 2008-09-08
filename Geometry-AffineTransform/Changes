@@ -1,0 +1,9 @@
+Version 1.1
+- Added clone() method
+- Documentation additions and cleanups
+- POD tweaks for improved appearance on search.cpan.org
+- Listed dependencies in Makefile.PL
+- Added Changes file
+
+Version 1.0
+- Initial release

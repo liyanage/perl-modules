@@ -3,6 +3,7 @@ Makefile.PL
 MANIFEST
 perl-Geometry-AffineTransform.spec
 README
+Changes
 run-test.sh
 t/1.t
 t/lib/Geometry/AffineTransform/Test.pm
