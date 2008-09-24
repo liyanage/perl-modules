@@ -79,8 +79,8 @@ In other words, invoking the constructor without arguments is equivalent to this
         m12 => 0,
         m21 => 0,
         m22 => 1,
-        tx  => 10,
-        ty  => 15
+        tx  => 0,
+        ty  => 0
     );
 
 =cut
