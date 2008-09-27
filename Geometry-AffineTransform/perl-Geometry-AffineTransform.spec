@@ -1,5 +1,5 @@
 %define modname Geometry-AffineTransform
-Version: 1.1
+Version: 1.2
 Release: 1
 Name: perl-%{modname}
 Requires: perl >= 0:5.00503
