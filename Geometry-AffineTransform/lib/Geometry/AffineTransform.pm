@@ -1,6 +1,6 @@
 package Geometry::AffineTransform;
 
-our $VERSION = '1.2';
+our $VERSION = '1.3';
 
 use strict;
 use warnings;
@@ -335,7 +335,7 @@ sub matrix_multiply {
 
 =item Apple Quartz 2D Programming Guide - The Math Behind the Matrices
 
-L<http://developer.apple.com/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/dq_affine/chapter_6_section_7.html>
+L<http://developer.apple.com/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/dq_affine/dq_affine.html#//apple_ref/doc/uid/TP30001066-CH204-CJBECIAD>
 
 =item Sun Java java.awt.geom.AffineTransform
 
@@ -343,7 +343,7 @@ L<http://java.sun.com/j2se/1.4.2/docs/api/java/awt/geom/AffineTransform.html>
 
 =item Wikipedia - Matrix Multiplication
 
-L<http://en.wikipedia.org/wiki/Matrix_(mathematics)#Matrix_multiplication>
+L<http://en.wikipedia.org/wiki/Matrix_(mathematics)#Matrix_multiplication.2C_linear_equations_and_linear_transformations>
 
 =back
 
