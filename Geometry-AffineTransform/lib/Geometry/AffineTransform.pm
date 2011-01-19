@@ -335,11 +335,11 @@ sub matrix_multiply {
 
 =item Apple Quartz 2D Programming Guide - The Math Behind the Matrices
 
-L<http://developer.apple.com/documentation/GraphicsImaging/Conceptual/drawingwithquartz2d/dq_affine/dq_affine.html#//apple_ref/doc/uid/TP30001066-CH204-CJBECIAD>
+L<http://developer.apple.com/library/mac/DOCUMENTATION/GraphicsImaging/Conceptual/drawingwithquartz2d/dq_affine/dq_affine.html#//apple_ref/doc/uid/TP30001066-CH204-CJBECIAD>
 
 =item Sun Java java.awt.geom.AffineTransform
 
-L<http://java.sun.com/j2se/1.4.2/docs/api/java/awt/geom/AffineTransform.html>
+L<http://download.oracle.com/javase/1.4.2/docs/api/java/awt/geom/AffineTransform.html>
 
 =item Wikipedia - Matrix Multiplication
 
