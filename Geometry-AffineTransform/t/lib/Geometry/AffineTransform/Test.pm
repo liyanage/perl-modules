@@ -10,7 +10,7 @@ use Test::More;
 use List::Util qw(max min);
 use Data::Dumper;
 
-sub identity : Test(2) {
+sub identity : Test(6) {
 	my $self = shift;
 
 	my $t = Geometry::AffineTransform->new();
@@ -19,24 +19,67 @@ sub identity : Test(2) {
 	is_deeply(\@result, [10, 5], "identity transform");
 	@result = $t->transform(0, 0);
 	is_deeply(\@result, [0, 0], "identity transform");
+	
+	my $inverse = $t->clone()->invert();
+	ok(ref($inverse), "clone()->invert()");
+	isnt($inverse, $t, "clone()->invert() returns different instance");
+	
+	@result = $inverse->transform(10, 5);
+	is_deeply(\@result, [10, 5], "reverse identity transform");
+	@result = $inverse->transform(0, 0);
+	is_deeply(\@result, [0, 0], "reverse identity transform");
 
 }
 
 
+sub inverse : Test(2) {
+	my $self = shift;
 
-sub rotate : Test(3) {
+	my $t = Geometry::AffineTransform->new();
+	my @result;
+	$t->scale(0, 1)->translate(7, 7);
+	@result = $t->transform(10, 5, 20, 6);
+	is_deeply(\@result, [7, 12, 7, 13], "to line");
+
+    eval {
+    	$t->invert();
+    };
+    
+    like($@, qr/^Unable to invert this transform .zero determinant./, "exception for zero determinant");	
+}
+
+
+sub determinant : Test(2) {
+	my $self = shift;
+
+	my $t = Geometry::AffineTransform->new();
+	my @result;
+	$t->scale(10, 5);
+	is($t->determinant(), 50, "determinant()");
+
+    $t->scale(0, 1);
+	is($t->determinant(), 0, "determinant()");
+}
+
+
+
+sub rotate : Test(5) {
 	my $self = shift;
 
 	my $t = Geometry::AffineTransform->new();
 	is($t->rotate(180), $t);
-	my @result;
+    my $inverse = $t->clone()->invert();
+
 	is_deeply([$t->transform(10, 5)], [-10, -5], "rotate 180");
+	is_deeply([$inverse->transform(-10, -5)], [10, 5], "rotate 180");
 	
 	$t->rotate(90)->rotate(90);
 	is_deeply([$t->transform(10, 5)], [10, 5], "rotate 360");
+
+	$inverse = $t->clone()->invert();
+	is_deeply([$inverse->transform(10, 5)], [10, 5], "rotate 360 inverse");
 	
 }
-
 
 
 
