@@ -9,3 +9,5 @@ the tar.gz distribution archive file with this command:
 
     rpmbuild -ta Geometry-AffineTransform-x.y.tar.gz
 
+Thanks to Kevin Ryde for the invert() implementation.
+

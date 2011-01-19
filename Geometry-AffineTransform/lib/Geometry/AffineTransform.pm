@@ -1,6 +1,6 @@
 package Geometry::AffineTransform;
 
-our $VERSION = '1.4';
+our $VERSION = '1.3';
 
 use strict;
 use warnings;
