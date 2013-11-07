@@ -9,4 +9,14 @@ WriteMakefile(
 		'Math::Trig'  => 0,
 	},
 	AUTHOR        => 'Marc Liyanage <liyanage@cpan.org>',
+	META_MERGE    => {
+		'meta-spec' => { version => 2 },
+		resources => {
+ 			repository => {
+				type => 'git',
+				url  => 'https://github.com/liyanage/perl-modules.git',
+				web  => 'https://github.com/liyanage/perl-modules',
+			},
+		},
+	},
 );
