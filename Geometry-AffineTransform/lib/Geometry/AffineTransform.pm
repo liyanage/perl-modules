@@ -54,7 +54,7 @@ Most methods return the instance so that you can chain method calls:
 Constructor, returns a new instance configured with an identity transform.
 
 You can optionally supply any of the six specifiable parts of the transformation matrix.
-The six values in the first two colums are the specifiable values:
+The six values in the first two columns are the specifiable values:
 
     [ m11 m21 0 ]
     [ m21 m22 0 ]
