@@ -1,3 +1,6 @@
+Version 1.4 - November 2013
+- Documentation typo fixes and packaging metadata improvements, thanks to David Steinbrunner.
+
 Version 1.3 - January 2011
 - Added invert() method, thanks to Kevin Ryde.
 - Some code and documentation cleanup and updates to outdated links.
