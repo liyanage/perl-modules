@@ -374,11 +374,11 @@ L<http://developer.apple.com/library/mac/DOCUMENTATION/GraphicsImaging/Conceptua
 
 =item Sun Java java.awt.geom.AffineTransform
 
-L<http://download.oracle.com/javase/1.4.2/docs/api/java/awt/geom/AffineTransform.html>
+L<https://docs.oracle.com/javase/8/docs/api/java/awt/geom/AffineTransform.html>
 
 =item Wikipedia - Matrix Multiplication
 
-L<http://en.wikipedia.org/wiki/Matrix_(mathematics)#Matrix_multiplication.2C_linear_equations_and_linear_transformations>
+L<http://en.wikipedia.org/wiki/Matrix_(mathematics)#Linear_transformations>
 
 =back
 
