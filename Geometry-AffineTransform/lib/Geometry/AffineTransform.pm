@@ -84,11 +84,10 @@ In other words, invoking the constructor without arguments is equivalent to this
 =cut
 
 sub new {
-	my $self = shift;
+	my $class = shift;
 	my (%args) = @_;
 
-	my $class = ref($self) || $self;
-	$self = bless {m11 => 1, m12 => 0, m21 => 0, m22 => 1, tx => 0, ty => 0, %args}, $class;
+	my $self = bless {m11 => 1, m12 => 0, m21 => 0, m22 => 1, tx => 0, ty => 0, %args}, $class;
 #	$self->init();
 	Hash::Util::lock_keys(%$self);
 
@@ -111,7 +110,7 @@ Returns a clone of the instance.
 
 sub clone {
 	my $self = shift;
-	return $self->new()->set_matrix_2x3($self->matrix_2x3());
+	return ref($self)->new()->set_matrix_2x3($self->matrix_2x3());
 }
 
 
