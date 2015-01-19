@@ -200,7 +200,7 @@ sub concatenate {
 	my $self = shift;
 	my @transforms = @_;
 	foreach my $t (@transforms) {
-		croak "Expecting argument of type Geometry::AffineTransform" unless (ref $t);
+		croak "Expecting argument of type Geometry::AffineTransform" unless (ref $t eq ref $self);
 		$self->concatenate_matrix_2x3($t->matrix_2x3()) ;
 	}
 	return $self;

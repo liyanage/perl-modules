@@ -105,7 +105,7 @@ sub concatenate_matrix_2x3 : Test(2) {
 
 
 
-sub concatenate : Test(1) {
+sub concatenate : Test(2) {
 	my $self = shift @_;
 	my $t = Geometry::AffineTransform->new();
 	$t->set_matrix_2x3(1, 2, 3, 4, 5, 6);
@@ -113,6 +113,9 @@ sub concatenate : Test(1) {
 	$t2->set_matrix_2x3(1, 2, 3, 4, 5, 6);
 	$t->concatenate($t2);
 	is_deeply([$t->matrix_2x3()], [7, 10, 15, 22, 28, 40]);
+
+	eval { $t->concatenate($self) };
+	ok($@, "Geometry::AffineTransform::concatenate checks for valid object");
 }
 
 
