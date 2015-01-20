@@ -171,9 +171,15 @@ sub transform {
 
 
 
+=head2 concatenate_matrix_2x3 
 
-# concatenate another transformation matrix to the current state.
-# Takes the six specifiable parts of the 3x3 transformation matrix.
+Concatenate another transformation matrix to the current state.
+Takes the six specifiable parts of the 3x3 transformation matrix.
+
+	my $translated = $t->concatenate_matrix_2x3(1, 0, 0, 1, $horiz, $vert);
+
+=cut
+
 sub concatenate_matrix_2x3 {
 	my $self = shift;
 	my ($m11, $m12, $m21, $m22, $tx, $ty) = @_;
@@ -294,6 +300,16 @@ sub rotate {
 }
 
 
+=head2 matrix_2x3
+
+Returns the current value of the 3 x 3 transformation matrix (leaving off
+the third, fixed column) as a 6-element list:
+
+    my ($m11, $m12,
+        $m21, $m22,
+        $tx,  $ty ) = $t->matrix_2x3();
+
+=cut
 
 # returns the 6 specifiable parts of the transformation matrix
 sub matrix_2x3 {
@@ -302,12 +318,29 @@ sub matrix_2x3 {
 }
 
 
-# returns the determinant of the matrix
+=head2 determinant
+
+Returns the determinant of the matrix.  See the Resources section, below, for
+help understanding matrix determinants.
+
+    my $det = $t->determinant();
+
+=cut
+
 sub determinant {
 	my $self = shift;
 	return $self->{m11} * $self->{m22} - $self->{m12} * $self->{m21};
 }
 
+
+
+=head2 set_matrix_2x3
+
+Sets the current value of the transformation matrix, as a 6-element list:
+
+    $t->set_matrix_2x3($m11, $m12, $m21, $m22, $tx,  $ty );
+
+=cut
 
 # sets the 6 specifiable parts of the transformation matrix
 sub set_matrix_2x3 {
