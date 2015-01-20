@@ -190,7 +190,8 @@ sub matrix_multiply : Test(1) {
 #	3 * 1 + 4 * 3 + 0 * 5 = 15    3 * 2 + 4 * 4 + 0 * 6 = 22    3 * 0 + 4 * 0 + 0 * 1 = 0
 #	5 * 1 + 6 * 3 + 1 * 5 = 28    5 * 2 + 6 * 4 + 1 * 6 = 40    5 * 0 + 6 * 0 + 1 * 1 = 1
 	
-	my @result = Geometry::AffineTransform->matrix_multiply([1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6]);
+	my $t = Geometry::AffineTransform->new()->set_matrix_2x3(1, 2, 3, 4, 5, 6);
+	my @result = $t->_matrix_multiply( [1, 2, 3, 4, 5, 6]);
 	is_deeply(\@result, [7, 10, 15, 22, 28, 40]);
 #	diag(Data::Dumper->Dump([\@result]));
 

@@ -1,6 +1,6 @@
 package Geometry::AffineTransform;
 
-our $VERSION = '1.4';
+our $VERSION = '1.5';
 
 use strict;
 use warnings;
@@ -183,9 +183,8 @@ Takes the six specifiable parts of the 3x3 transformation matrix.
 sub concatenate_matrix_2x3 {
 	my $self = shift;
 	my ($m11, $m12, $m21, $m22, $tx, $ty) = @_;
-	my $a = [$self->matrix_2x3()];
 	my $b = [$m11, $m12, $m21, $m22, $tx, $ty];
-	return $self->set_matrix_2x3($self->matrix_multiply($a, $b));
+	return $self->set_matrix_2x3($self->_matrix_multiply($b));
 }
 
 
@@ -370,11 +369,10 @@ sub matrix {
 
 
 
-
 # a simplified multiply that assumes the fixed 0 0 1 third column
-sub matrix_multiply {
+sub _matrix_multiply {
 	my $self = shift;
-	my ($a, $b) = @_;
+	my ($b) = @_;
 
 # 	a11 a12 0
 # 	a21 a22 0
@@ -384,7 +382,7 @@ sub matrix_multiply {
 # 	b21 b22 0
 # 	b31 b32 1
 
-	my ($a11, $a12, $a21, $a22, $a31, $a32) = @$a;
+	my ($a11, $a12, $a21, $a22, $a31, $a32) = $self->matrix_2x3();
 	my ($b11, $b12, $b21, $b22, $b31, $b32) = @$b;
 
 	return
