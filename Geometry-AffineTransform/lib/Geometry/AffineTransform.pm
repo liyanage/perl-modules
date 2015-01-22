@@ -1,6 +1,6 @@
 package Geometry::AffineTransform;
 
-our $VERSION = '1.4';
+our $VERSION = '1.5';
 
 use strict;
 use warnings;
@@ -84,11 +84,10 @@ In other words, invoking the constructor without arguments is equivalent to this
 =cut
 
 sub new {
-	my $self = shift;
+	my $class = shift;
 	my (%args) = @_;
 
-	my $class = ref($self) || $self;
-	$self = bless {m11 => 1, m12 => 0, m21 => 0, m22 => 1, tx => 0, ty => 0, %args}, $class;
+	my $self = bless {m11 => 1, m12 => 0, m21 => 0, m22 => 1, tx => 0, ty => 0, %args}, $class;
 #	$self->init();
 	Hash::Util::lock_keys(%$self);
 
@@ -111,7 +110,7 @@ Returns a clone of the instance.
 
 sub clone {
 	my $self = shift;
-	return $self->new()->set_matrix_2x3($self->matrix_2x3());
+	return ref($self)->new()->_set_matrix_2x3($self->_matrix_2x3());
 }
 
 
@@ -131,7 +130,7 @@ sub invert {
     
   	croak "Unable to invert this transform (zero determinant)" unless $det;
 
-    return $self->set_matrix_2x3(
+    return $self->_set_matrix_2x3(
         $self->{m22} / $det, # 11
         -$self->{m12} / $det, # 12
         -$self->{m21} / $det, # 21
@@ -175,12 +174,11 @@ sub transform {
 
 # concatenate another transformation matrix to the current state.
 # Takes the six specifiable parts of the 3x3 transformation matrix.
-sub concatenate_matrix_2x3 {
+sub _concatenate_matrix_2x3 {
 	my $self = shift;
 	my ($m11, $m12, $m21, $m22, $tx, $ty) = @_;
-	my $a = [$self->matrix_2x3()];
 	my $b = [$m11, $m12, $m21, $m22, $tx, $ty];
-	return $self->set_matrix_2x3($self->matrix_multiply($a, $b));
+	return $self->_set_matrix_2x3($self->_matrix_multiply($b));
 }
 
 
@@ -200,8 +198,8 @@ sub concatenate {
 	my $self = shift;
 	my @transforms = @_;
 	foreach my $t (@transforms) {
-		croak "Expecting argument of type Geometry::AffineTransform" unless (ref $t);
-		$self->concatenate_matrix_2x3($t->matrix_2x3()) ;
+		croak "Expecting argument of type Geometry::AffineTransform" unless (ref $t eq ref $self);
+		$self->_concatenate_matrix_2x3($t->_matrix_2x3()) ;
 	}
 	return $self;
 }
@@ -232,7 +230,7 @@ Returns C<$self>.
 sub scale {
 	my $self = shift;
 	my ($sx, $sy) = @_;
-	return $self->concatenate_matrix_2x3($sx, 0, 0, $sy, 0, 0);
+	return $self->_concatenate_matrix_2x3($sx, 0, 0, $sy, 0, 0);
 }
 
 
@@ -262,7 +260,7 @@ Returns C<$self>.
 sub translate {
 	my $self = shift;
 	my ($tx, $ty) = @_;
-	return $self->concatenate_matrix_2x3(1, 0, 0, 1, $tx, $ty);
+	return $self->_concatenate_matrix_2x3(1, 0, 0, 1, $tx, $ty);
 }
 
 
@@ -291,19 +289,27 @@ sub rotate {
 	my $self = shift;
 	my ($degrees) = @_;
 	my $rad = Math::Trig::deg2rad($degrees);
-	return $self->concatenate_matrix_2x3(cos($rad), sin($rad), -sin($rad), cos($rad), 0, 0);
+	return $self->_concatenate_matrix_2x3(cos($rad), sin($rad), -sin($rad), cos($rad), 0, 0);
 }
 
 
 
 # returns the 6 specifiable parts of the transformation matrix
-sub matrix_2x3 {
+sub _matrix_2x3 {
 	my $self = shift;
 	return $self->{m11}, $self->{m12}, $self->{m21}, $self->{m22}, $self->{tx}, $self->{ty};
 }
 
 
-# returns the determinant of the matrix
+=head2 determinant
+
+Returns the determinant of the matrix.  See the Resources section, below, for
+help understanding matrix determinants.
+
+    my $det = $t->determinant();
+
+=cut
+
 sub determinant {
 	my $self = shift;
 	return $self->{m11} * $self->{m22} - $self->{m12} * $self->{m21};
@@ -311,7 +317,7 @@ sub determinant {
 
 
 # sets the 6 specifiable parts of the transformation matrix
-sub set_matrix_2x3 {
+sub _set_matrix_2x3 {
 	my $self = shift;
 	($self->{m11}, $self->{m12},
 	 $self->{m21}, $self->{m22},
@@ -340,9 +346,9 @@ sub matrix {
 
 
 # a simplified multiply that assumes the fixed 0 0 1 third column
-sub matrix_multiply {
+sub _matrix_multiply {
 	my $self = shift;
-	my ($a, $b) = @_;
+	my ($b) = @_;
 
 # 	a11 a12 0
 # 	a21 a22 0
@@ -352,7 +358,7 @@ sub matrix_multiply {
 # 	b21 b22 0
 # 	b31 b32 1
 
-	my ($a11, $a12, $a21, $a22, $a31, $a32) = @$a;
+	my ($a11, $a12, $a21, $a22, $a31, $a32) = $self->_matrix_2x3();
 	my ($b11, $b12, $b21, $b22, $b31, $b32) = @$b;
 
 	return
